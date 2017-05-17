@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OneCleaner"
         mc:Ignorable="d"
-        Title="OneCleaner" Height="350" Width="525" Loaded="Window_LoadedAsync">
+        Title="OneCleaner" Height="350" Width="525" Loaded="Window_LoadedAsync" Icon="icon.png">
     <Window.Resources>
         <!--local:StateToFontWeightsConverter x:Key="StateToFontWeightsConverter"/-->
         <DataTemplate x:Key="myItem" DataType="local:InstalledVersionUI">
@@ -19,12 +19,10 @@
                 <StackPanel Grid.Column="1" x:Name="itemTexts">
                     <TextBlock Text="{Binding Name}" FontSize="16"/>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Версия: " FontSize="11" FontStyle="Italic"/>
-                        <TextBlock Text="{Binding Version}" Margin="0,0,0,5" FontStyle="Italic" FontSize="11"/>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Размер: " FontSize="11" FontStyle="Italic"/>
-                        <TextBlock Text="{Binding Size}" Margin="0,0,0,5" FontStyle="Italic" FontSize="11"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Размер: " FontSize="11" FontStyle="Italic"/>
+                            <TextBlock Text="{Binding Size}" Margin="0,0,0,5" FontStyle="Italic" FontSize="11"/>
+                        </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </Grid>
@@ -44,7 +42,7 @@
     </Window.TaskbarItemInfo>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="32"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
@@ -55,12 +53,12 @@
             <Button x:Name="ButtonUninstall" Content="Выполнить удаление"  Click="ButtonUninstall_Click" Margin="3,0,0,0"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0">
-            <Button Margin="3 3" Background="{x:Null}" BorderThickness="1" Click="Button_Click">
-                <Image Source="checked.png" />
+            <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="Button_Click" Width="25" Height="25">
+                <Image Source="checked.png" Stretch="None" />
             </Button>
 
-            <Button Margin="3 3" Background="{x:Null}" BorderThickness="1" Click="Button_Click_2">
-                <Image Source="unchecked.png" />
+            <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="Button_Click_2" Width="25" Height="25">
+                <Image Source="unchecked.png" Stretch="None" />
             </Button>
         </StackPanel>
     </Grid>

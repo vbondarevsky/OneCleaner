@@ -104,5 +104,8 @@
   <ItemGroup>
     <Resource Include="checked.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
