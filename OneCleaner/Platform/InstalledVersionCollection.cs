@@ -4,57 +4,86 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OneCleaner.Platform
 {
-    public class InstalledVersionCollection
+    public class InstalledVersionCollection : List<InstalledVersion>
     {
-        private List<InstalledVersion> list = new List<InstalledVersion>();
+        public long TotalSize
+        {
+            get
+            {
+                long totalSize = 0;
+                HashSet<string> locations = new HashSet<string>();
+                foreach (var item in this)
+                {
+                    if (!locations.Contains(item.Location))
+                    {
+                        totalSize += item.Size;
+                        locations.Add(item.Location);
+                    }
+                }
+                return totalSize;
+            }
+        }
 
         public InstalledVersionCollection()
         {
-            populateList();
+            Populate();
         }
 
-        private void populateList()
+        private void Populate()
         {
-            list.Clear();
+            this.Clear();
 
-            var subkey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall");
-            foreach (var itemUUID in subkey.GetSubKeyNames())
+            var key = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
+            var localMachine32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
+            var localMachine64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+
+            var keyUninstall32 = localMachine32.OpenSubKey(key);
+            var keyUninstall64 = localMachine64.OpenSubKey(key);
+
+            foreach (var keyUninstall in new List<RegistryKey>() { keyUninstall32, keyUninstall64 })
             {
-                var itemKey = subkey.OpenSubKey(itemUUID);
-                string name = (string)itemKey.GetValue("DisplayName", null);
-                if (name != null)
+                foreach (var itemUUID in keyUninstall.GetSubKeyNames())
                 {
-                    string vendor = (string)itemKey.GetValue("Publisher", null);
-                    if (vendor == "1С-Софт" || vendor == "1C" || vendor == "1С")
+                    var itemKey = keyUninstall.OpenSubKey(itemUUID);
+                    if (itemKey == null)
+                        continue;
+
+                    var name = (string)itemKey.GetValue("DisplayName", null);
+                    var vendor = (string)itemKey.GetValue("Publisher", null);
+                    var version = (string)itemKey.GetValue("DisplayVersion", "0.0.0.0");
+                    var location = (string)itemKey.GetValue("InstallLocation", "");
+                    var dateStr = (string)itemKey.GetValue("InstallDate", "00010101");
+
+                    if (name == null || !IsPlatform1C(vendor) || String.IsNullOrEmpty(location))
+                        continue;
+
+                    InstalledVersion instVerItem = new InstalledVersion
                     {
-                        var version = (string)itemKey.GetValue("DisplayVersion", "0.0.0.0");
-                        var location = (string)itemKey.GetValue("InstallLocation", "");
-                        var dateStr = (string)itemKey.GetValue("InstallDate", "00000000");
-                        var date = DateTime.ParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture);
-                        var directory = new DirectoryInfo(location);
-                        InstalledVersion instVerItem = new InstalledVersion(name, version, itemUUID, location, date, DirectorySize(directory));
-                        list.Add(instVerItem);
-                    }
+                        Name = name,
+                        Version = version,
+                        UUID = itemUUID,
+                        Location = location,
+                        InstallDate = DateTime.ParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture),
+                        Size = DirectorySize(new DirectoryInfo(location))
+                    };
+                    this.Add(instVerItem);
                 }
-
             }
-
         }
 
-        private long DirectorySize(DirectoryInfo dir)
+        private static bool IsPlatform1C(string vendor)
         {
-            return dir.GetFiles().Sum(fi => fi.Length) +
-                   dir.GetDirectories().Sum(di => DirectorySize(di));
+            return vendor == "1С-Софт" || vendor == "1C-Soft" || vendor == "1C" || vendor == "1С";
         }
 
-        public long GetTotalSize()
+        private long DirectorySize(DirectoryInfo directoryInfo)
         {
-            return this.list.Sum(item => item.size);
+            return directoryInfo.GetFiles().Sum(file => file.Length) +
+                   directoryInfo.GetDirectories().Sum(directory => DirectorySize(directory));
         }
+
     }
 }
