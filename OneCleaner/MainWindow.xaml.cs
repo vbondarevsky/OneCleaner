@@ -1,18 +1,12 @@
 ﻿using OneCleaner.Platform;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Shell;
 
 namespace OneCleaner
@@ -28,7 +22,7 @@ namespace OneCleaner
         public MainWindow()
         {
             InitializeComponent();
-            list.ItemsSource = _installedVersions;
+            List.ItemsSource = _installedVersions;
 
 #if DEBUG
             this.Title = this.Title + " (DEBUG)";
@@ -37,12 +31,12 @@ namespace OneCleaner
 
         private async void Window_LoadedAsync(object sender, RoutedEventArgs e)
         {
-            list.Visibility = Visibility.Hidden;
+            List.Visibility = Visibility.Hidden;
             ButtonUninstall.IsEnabled = false;
 
             await _installedVersions.GetVersions();
 
-            list.Visibility = Visibility.Visible;
+            List.Visibility = Visibility.Visible;
             ButtonUninstall.IsEnabled = true;
         }
 
@@ -106,7 +100,7 @@ namespace OneCleaner
         }
 
 
-        private void list_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void List_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             foreach (InstalledVersionUI item in ((ListBox)(sender)).SelectedItems)
             {
@@ -136,13 +130,9 @@ namespace OneCleaner
         private async void ButtonUninstall_Click(object sender, RoutedEventArgs e)
         {
             List<InstalledVersionUI> uninst = _installedVersions
-      .Where(item => item.IsChecked && item.State == State.Installed)
-      .Select(item =>
-      {
-          item.State = State.MarkedForUninstall;
-          return item;
-      })
-      .ToList();
+                .Where(item => item.IsChecked && item.State == State.Installed)
+                .Select(item => { item.State = State.MarkedForUninstall; return item; })
+                .ToList();
 
             SetWindowStateInProgress();
 

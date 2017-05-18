@@ -1,11 +1,12 @@
-﻿<Window x:Class="OneCleaner.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OneCleaner"
+        xmlns:Platform="clr-namespace:OneCleaner.Platform" x:Class="OneCleaner.MainWindow"
         mc:Ignorable="d"
-        Title="OneCleaner" Height="350" Width="525" Loaded="Window_LoadedAsync" Icon="icon.png">
+        Title="OneCleaner" Height="350" Width="525" Loaded="Window_LoadedAsync" Icon="icon.ico">
     <Window.Resources>
         <!--local:StateToFontWeightsConverter x:Key="StateToFontWeightsConverter"/-->
         <DataTemplate x:Key="myItem" DataType="local:InstalledVersionUI">
@@ -47,7 +48,7 @@
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
         <TextBlock TextWrapping="Wrap" Text="Получение списка установленных версий..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Foreground="#FF9C9C9C" Grid.Row="1"/>
-        <ListView x:Name="list" ItemTemplate="{StaticResource myItem}" PreviewKeyDown="list_PreviewKeyDown" Grid.Row="1"/>
+        <ListView x:Name="List" ItemTemplate="{StaticResource myItem}" PreviewKeyDown="List_PreviewKeyDown" Grid.Row="1"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="10,7,5,5">
             <Button x:Name="ButtonCancel" Content="Отменить" Visibility="Collapsed" Click="ButtonCancel_Click" Margin="0,0,3,0"/>
             <Button x:Name="ButtonUninstall" Content="Выполнить удаление"  Click="ButtonUninstall_Click" Margin="3,0,0,0"/>

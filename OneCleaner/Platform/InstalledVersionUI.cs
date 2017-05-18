@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -125,17 +122,16 @@ namespace OneCleaner.Platform
                     var result = 0;
                     System.Threading.Thread.Sleep(5000);
 #else
-                    //var result = mngObject.InvokeMethod("Uninstall", args);
-                    
-                    if(uninstallStr == null)
+                    if (_uninstallStr == null)
                     {
                         return false;
                     }
 
-                    var ProcessInfo = new System.Diagnostics.ProcessStartInfo("msiexec.exe", String.Format("/X{0} /quiet",uninstallStr));
-                    ProcessInfo.CreateNoWindow = true;
-                    ProcessInfo.UseShellExecute = true;
-
+                    var ProcessInfo = new System.Diagnostics.ProcessStartInfo("msiexec.exe", String.Format("/x{0} /q", _uninstallStr))
+                    {
+                        CreateNoWindow = false,
+                        UseShellExecute = true
+                    };
                     var Process = System.Diagnostics.Process.Start(ProcessInfo);
                     Process.WaitForExit();
                     var result = Process.ExitCode;
