@@ -4,9 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Shell;
 
 namespace OneCleaner
@@ -16,6 +14,9 @@ namespace OneCleaner
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string TotalSize { get; set; }
+        public string FreeSize { get; set; }
+
         private InstalledVersionUICollection _installedVersions = new InstalledVersionUICollection();
         private bool _cancelFlag = false;
 
@@ -23,6 +24,12 @@ namespace OneCleaner
         {
             InitializeComponent();
             List.ItemsSource = _installedVersions;
+
+            MainGrid.DataContext = this;
+
+            TotalSize = "0 MB";
+            FreeSize = "0 MB";
+
 
 #if DEBUG
             this.Title = this.Title + " (DEBUG)";
@@ -65,26 +72,6 @@ namespace OneCleaner
             };
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            var item = FindVisualParent<ListItem>(sender as Button);
-        }
-
-        public static T FindVisualParent<T>(DependencyObject childElement) where T : DependencyObject
-        {
-            DependencyObject parent = VisualTreeHelper.GetParent(childElement);
-            T parentAsT = parent as T;
-            if (parent == null)
-            {
-                return null;
-            }
-            else if (parentAsT != null)
-            {
-                return parentAsT;
-            }
-            return FindVisualParent<T>(parent);
-        }
-
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
         {
             _cancelFlag = true;
@@ -111,7 +98,7 @@ namespace OneCleaner
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void ButtonSelectAll_Click(object sender, RoutedEventArgs e)
         {
             foreach (var item in _installedVersions)
             {
@@ -119,7 +106,7 @@ namespace OneCleaner
             }
         }
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void ButtonUnselectAll_Click(object sender, RoutedEventArgs e)
         {
             foreach (var item in _installedVersions)
             {
@@ -163,7 +150,6 @@ namespace OneCleaner
             this.TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
 
             SetWindowStateIdle();
-
         }
     }
 }

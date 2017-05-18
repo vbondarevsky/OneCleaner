@@ -41,24 +41,36 @@
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo/>
     </Window.TaskbarItemInfo>
-    <Grid>
+    <Grid Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="32"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="35"/>
+            <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
         <TextBlock TextWrapping="Wrap" Text="Получение списка установленных версий..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Foreground="#FF9C9C9C" Grid.Row="1"/>
         <ListView x:Name="List" ItemTemplate="{StaticResource myItem}" PreviewKeyDown="List_PreviewKeyDown" Grid.Row="1"/>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Row="2" Margin="10,7,5,5">
-            <Button x:Name="ButtonCancel" Content="Отменить" Visibility="Collapsed" Click="ButtonCancel_Click" Margin="0,0,3,0"/>
-            <Button x:Name="ButtonUninstall" Content="Выполнить удаление"  Click="ButtonUninstall_Click" Margin="3,0,0,0"/>
-        </StackPanel>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,6">
+                <Label Content="Всего:" Margin="0"/>
+                <Label Content="{Binding TotalSize}" Margin="0"/>
+                <Label Content="К удалению:" Margin="0"/>
+                <Label Content="{Binding FreeSize}"  Margin="0"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,6,6,6" HorizontalAlignment="Right">
+                <Button x:Name="ButtonCancel" Content="Отменить" Visibility="Collapsed" Click="ButtonCancel_Click" Margin="0"/>
+                <Button x:Name="ButtonUninstall" Content="Выполнить удаление"  Click="ButtonUninstall_Click" Margin="6,0,0,0"/>
+            </StackPanel>
+        </Grid>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0">
-            <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="Button_Click" Width="25" Height="25">
+            <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="ButtonSelectAll_Click" Width="25" Height="25">
                 <Image Source="checked.png" Stretch="None" />
             </Button>
 
-            <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="Button_Click_2" Width="25" Height="25">
+            <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="ButtonUnselectAll_Click" Width="25" Height="25">
                 <Image Source="unchecked.png" Stretch="None" />
             </Button>
         </StackPanel>
