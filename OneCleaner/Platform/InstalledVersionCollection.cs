@@ -38,12 +38,17 @@ namespace OneCleaner.Platform
 
             var key = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
             var localMachine32 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32);
-            var localMachine64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-
             var keyUninstall32 = localMachine32.OpenSubKey(key);
-            var keyUninstall64 = localMachine64.OpenSubKey(key);
 
-            foreach (var keyUninstall in new List<RegistryKey>() { keyUninstall32, keyUninstall64 })
+            var keysUninstall = new List<RegistryKey>() { keyUninstall32 };
+            if (Environment.Is64BitOperatingSystem)
+            {
+                var localMachine64 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                var keyUninstall64 = localMachine64.OpenSubKey(key);
+                keysUninstall.Add(keyUninstall64);
+            }
+
+            foreach (var keyUninstall in keysUninstall)
             {
                 foreach (var itemUUID in keyUninstall.GetSubKeyNames())
                 {
