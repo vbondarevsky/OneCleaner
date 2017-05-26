@@ -4,10 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OneCleaner"
-        xmlns:Platform="clr-namespace:OneCleaner.Platform" x:Class="OneCleaner.MainWindow"
+        xmlns:Platform="clr-namespace:OneCleaner.Platform"
+    xmlns:Converters="clr-namespace:OneCleaner.Converters"
+    x:Class="OneCleaner.MainWindow"
         mc:Ignorable="d"
         Title="OneCleaner" Height="350" Width="525" Loaded="Window_LoadedAsync" Icon="icon.ico">
+    <Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>
     <Window.Resources>
+        <Converters:LongToSizeStringConverter x:Key="LongToSizeStringConverter"/>
         <!--local:StateToFontWeightsConverter x:Key="StateToFontWeightsConverter"/-->
         <DataTemplate x:Key="myItem" DataType="local:InstalledVersionUI">
             <Grid>
@@ -37,42 +43,79 @@
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
+
+        <DataTemplate x:Key="cacheItem" DataType="local:CacheItem">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="25"/>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="{Binding UUID}"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="{Binding Size, Converter={StaticResource LongToSizeStringConverter}}" HorizontalAlignment="Right"/>
+                </StackPanel>
+            </Grid>
+        </DataTemplate>
     </Window.Resources>
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo/>
     </Window.TaskbarItemInfo>
     <Grid Name="MainGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="32"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
-        </Grid.RowDefinitions>
-        <TextBlock TextWrapping="Wrap" Text="Получение списка установленных версий..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Foreground="#FF9C9C9C" Grid.Row="1"/>
-        <ListView x:Name="List" ItemTemplate="{StaticResource myItem}" PreviewKeyDown="List_PreviewKeyDown" Grid.Row="1"/>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="150"/>
-            </Grid.ColumnDefinitions>
-            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,6">
-                <Label Content="Всего:" Margin="0"/>
-                <Label Content="{Binding TotalSize}" Margin="0"/>
-                <Label Content="К удалению:" Margin="0"/>
-                <Label Content="{Binding FreeSize}"  Margin="0"/>
-            </StackPanel>
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,6,6,6" HorizontalAlignment="Right">
-                <Button x:Name="ButtonCancel" Content="Отменить" Visibility="Collapsed" Click="ButtonCancel_Click" Margin="0"/>
-                <Button x:Name="ButtonUninstall" Content="Выполнить удаление"  Click="ButtonUninstall_Click" Margin="6,0,0,0"/>
-            </StackPanel>
-        </Grid>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0">
-            <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="ButtonSelectAll_Click" Width="25" Height="25">
-                <Image Source="checked.png" Stretch="None" />
-            </Button>
+        <TabControl>
+            <TabItem Header="Платформа">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="32"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock TextWrapping="Wrap" Text="Получение списка установленных версий..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Foreground="#FF9C9C9C" Grid.Row="1"/>
+                    <ListView x:Name="List" ItemsSource="{Binding InstalledVersions}" ItemTemplate="{StaticResource myItem}" PreviewKeyDown="List_PreviewKeyDown" Grid.Row="1">
 
-            <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="ButtonUnselectAll_Click" Width="25" Height="25">
-                <Image Source="unchecked.png" Stretch="None" />
-            </Button>
-        </StackPanel>
+                    </ListView>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="150"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,6">
+                            <Label Content="Всего:" Margin="0"/>
+                            <Label Content="{Binding TotalSize}" Margin="0"/>
+                            <Label Content="К удалению:" Margin="0"/>
+                            <Label Content="{Binding FreeSize}"  Margin="0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,6,6,6" HorizontalAlignment="Right">
+                            <Button x:Name="ButtonCancel" Content="Отменить" Visibility="Collapsed" Click="ButtonCancel_Click" Margin="0"/>
+                            <Button x:Name="ButtonUninstall" Content="Выполнить удаление"  Click="ButtonUninstall_Click" Margin="6,0,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="0">
+                        <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="ButtonSelectAll_Click" Width="25" Height="25">
+                            <Image Source="checked.png" Stretch="None" />
+                        </Button>
+
+                        <Button Margin="3 3" Background="{x:Null}" BorderThickness="0.4" Click="ButtonUnselectAll_Click" Width="25" Height="25">
+                            <Image Source="unchecked.png" Stretch="None" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Кэш">
+                <Grid Background="#FFE5E5E5">
+                    <ListView ItemsSource="{Binding Cache}" 
+                              ItemTemplate="{StaticResource cacheItem}" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="Информационные базы">
+                <Grid Background="#FFE5E5E5"/>
+            </TabItem>
+        </TabControl>
+
     </Grid>
 </Window>

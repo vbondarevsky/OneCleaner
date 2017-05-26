@@ -7,7 +7,7 @@ using System.Windows.Data;
 
 namespace OneCleaner.Platform
 {
-    class InstalledVersionUI : INotifyPropertyChanged
+    public class InstalledVersionUI : INotifyPropertyChanged
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -159,7 +159,7 @@ namespace OneCleaner.Platform
         }
     }
 
-    enum State
+    public enum State
     {
         Installed,
         MarkedForUninstall,

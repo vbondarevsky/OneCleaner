@@ -109,12 +109,20 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\LongToSizeStringConverter.cs" />
+    <Compile Include="InstalledVersionItem.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Platform\Platform.cs" />
+    <Compile Include="ViewModels\InfoBaseItem.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Platform\CacheCollection.cs" />
+    <Compile Include="Platform\CacheItem.cs" />
+    <Compile Include="Platform\IBList.cs" />
     <Compile Include="Platform\InstalledVersion.cs" />
     <Compile Include="Platform\InstalledVersionCollection.cs" />
     <Compile Include="Platform\InstalledVersionUI.cs" />

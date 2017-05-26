@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OneCleaner.Platform
 {
-    class InstalledVersionUICollection : ObservableCollection<InstalledVersionUI>
+    public class InstalledVersionUICollection : ObservableCollection<InstalledVersionUI>
     {
         private static Task<List<InstalledVersionUI>> GetListVersions()
         {

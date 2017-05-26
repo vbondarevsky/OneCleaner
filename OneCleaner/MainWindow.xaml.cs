@@ -20,12 +20,15 @@ namespace OneCleaner
         private InstalledVersionUICollection _installedVersions = new InstalledVersionUICollection();
         private bool _cancelFlag = false;
 
+        private CacheCollection _cacheCollection;
         public MainWindow()
         {
             InitializeComponent();
-            List.ItemsSource = _installedVersions;
 
-            MainGrid.DataContext = this;
+            _cacheCollection = new CacheCollection();
+            //List.ItemsSource = _installedVersions;
+
+            //MainGrid.DataContext = this;
 
             TotalSize = "0 MB";
             FreeSize = "0 MB";
