@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OneCleaner.Platform
+﻿namespace OneCleaner
 {
-    public class CacheItem
+    public class Cache
     {
-        public bool IsChecked { get; set; }
         public string Path { get; set; }
         public string UUID { get; set; }
         public long Size { get; set; }

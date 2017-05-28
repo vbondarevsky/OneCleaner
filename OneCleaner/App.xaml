@@ -1,10 +1,14 @@
-﻿<Application x:Class="OneCleaner.App"
+﻿<Application
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:OneCleaner"
-             StartupUri="MainWindow.xaml"
+             xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="OneCleaner.App"
+             StartupUri="View/MainWindow.xaml"
              Startup="App_Startup" >
     <Application.Resources>
-
+        <System:Double x:Key="ItemFontSize">16</System:Double>
+        <System:Double x:Key="DetailItemFontSize">11</System:Double>
+        <FontStyle x:Key="DetailItemFontStyle">Italic</FontStyle>
+        <SolidColorBrush x:Key="DetailItemBrush" Color="Gray"/>
     </Application.Resources>
 </Application>

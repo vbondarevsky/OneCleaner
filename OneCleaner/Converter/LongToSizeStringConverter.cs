@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace OneCleaner.Converters
+namespace OneCleaner
 {
     [ValueConversion(typeof(long), typeof(string))]
     public class LongToSizeStringConverter : IValueConverter
@@ -15,14 +11,16 @@ namespace OneCleaner.Converters
         {
             string sizeString = "";
 
-            long sizeInKb = (long)value / 1024;
+            double sizeInKb = (long)value / 1024d;
 
             if ((long)value == 0)
-                sizeString = string.Format("{0} B", (long)value);
+                sizeString = string.Format("{0:0.0} B", (long)value);
             else if(sizeInKb < 1000)
-                sizeString = string.Format("{0} KB", sizeInKb);
+                sizeString = string.Format("{0:0.0} KB", sizeInKb);
+            else if (sizeInKb < 1000000)
+                sizeString = string.Format("{0:0.0} MB", sizeInKb / 1024d);
             else
-                sizeString = string.Format("{0} MB", sizeInKb / 1024);
+                sizeString = string.Format("{0:0.0} GB", sizeInKb / (1024d * 1024d));
 
             return sizeString;
         }

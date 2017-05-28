@@ -1,15 +1,12 @@
-﻿using System;
-
-namespace OneCleaner.Platform
+﻿namespace OneCleaner
 {
-    public class InstalledVersion
+    public class InfoBase
     {
         public string Name { get; set; }
-        public string Version { get; set; }
         public string UUID { get; set; }
-        public string Location { get; set; }
-        public DateTime InstallDate { get; set; }
+        public string Version { get; set; }
         public long Size { get; set; }
+        public string Connection { get; set; }
 
         public override string ToString()
         {

@@ -21,6 +21,7 @@ namespace OneCleaner
 
         private void App_Startup(object sender, StartupEventArgs e)
         {
+#if !DEBUG
             if (!IsRunAsAdministrator())
             {
                 // It is not possible to launch a ClickOnce app as administrator directly, so instead we launch the
@@ -46,6 +47,7 @@ namespace OneCleaner
                 // Shut down the current process
                 Application.Current.Shutdown();
             }
+#endif
         }
     }
 }
