@@ -11,6 +11,10 @@ namespace OneCleaner
         public Status Status { get; private set; }
         public double Progress { get; private set; }
 
+        public bool InstalledVersionsArePopulating { get; private set; }
+        public bool CacheArePopulating { get; private set; }
+        public bool InfoBasesArePopulating { get; private set; }
+
         public ObservableCollection<InstalledVersionItemViewModel> InstalledVersions { get; private set; }
         public ObservableCollection<CacheItemViewModel> Cache { get; private set; }
         public ObservableCollection<InfoBaseItemViewModel> InfoBases { get; private set; }
@@ -26,11 +30,9 @@ namespace OneCleaner
             InstalledVersions = new ObservableCollection<InstalledVersionItemViewModel>();
             PopulateInstalledVersions();
 
-            Cache = new ObservableCollection<CacheItemViewModel>();
-            PopulateCache();
-
             InfoBases = new ObservableCollection<InfoBaseItemViewModel>();
-            PopulateInfoBases();
+            Cache = new ObservableCollection<CacheItemViewModel>();
+            PopulateInfoBasesAndCache();
 
             UninstallCommand = new RelayCommand(Uninstall);
 
@@ -39,11 +41,6 @@ namespace OneCleaner
 
             UnselectAllInstalledVersionCommand = new RelayCommand(
                 () => { InstalledVersions.Select(item => { item.IsChecked = false; return item; }).ToList(); });
-
-            foreach (var item in Cache)
-            {
-                item.Name = InfoBases.Where(i => i.UUID == item.UUID).FirstOrDefault()?.Name;
-            }
         }
 
         private async void Uninstall()
@@ -85,26 +82,35 @@ namespace OneCleaner
             Status = Status.Idle;
         }
 
-        private async void PopulateInfoBases()
+        private async void PopulateInfoBasesAndCache()
         {
+            InfoBasesArePopulating = true;
             InfoBases.Clear();
+            CacheArePopulating = true;
+            Cache.Clear();
+
             foreach (var item in await Platform.GetInfoBases())
             {
                 InfoBases.Add(new InfoBaseItemViewModel() { Name = item.Name, UUID = item.UUID, Size = item.Size, Connection = item.Connection });
             }
-        }
-
-        private async void PopulateCache()
-        {
-            Cache.Clear();
+            
             foreach (var item in await Platform.GetCache())
             {
                 Cache.Add(new CacheItemViewModel() { Path = item.Path, UUID = item.UUID, Size = item.Size });
+            }
+
+            InfoBasesArePopulating = false;
+            CacheArePopulating = false;
+
+            foreach (var item in Cache)
+            {
+                item.Name = InfoBases.Where(i => i.UUID == item.UUID).FirstOrDefault()?.Name;
             }
         }
 
         private async void PopulateInstalledVersions()
         {
+            InstalledVersionsArePopulating = true;
             InstalledVersions.Clear();
             foreach (var item in await Platform.GetInstalledVersions())
             {
@@ -119,6 +125,7 @@ namespace OneCleaner
                     }
                 );
             }
+            InstalledVersionsArePopulating = false;
         }
     }
 }

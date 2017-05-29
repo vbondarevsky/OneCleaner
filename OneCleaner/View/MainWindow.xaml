@@ -11,6 +11,8 @@
         <local:MainWindowViewModel />
     </Window.DataContext>
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter1"/>
         <local:StatusToTextConverter x:Key="StatusToTextConverter"/>
         <local:LongToSizeStringConverter x:Key="LongToSizeStringConverter"/>
         <local:StatusToTaskbarStatusConverter x:Key="StatusToTaskbarStatusConverter"/>
@@ -86,15 +88,9 @@
                         <RowDefinition Height="32"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock TextWrapping="Wrap" Text="Получение списка установленных версий..." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="18" Foreground="#FF9C9C9C" Grid.Row="1"/>
-                    <ListView 
-                        ItemsSource="{Binding InstalledVersions}" 
-                        ItemTemplate="{StaticResource installedVersionItem}" 
-                        PreviewKeyDown="List_PreviewKeyDown" 
-                        Grid.Row="1" />
 
 
-                    <StackPanel HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
+                    <StackPanel HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Orientation="Horizontal" >
                         <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllInstalledVersionCommand}" Width="25" Height="25" HorizontalContentAlignment="Center">
                             <Image Source="../Resource/checked.png" Stretch="None" />
                         </Button>
@@ -105,6 +101,19 @@
                     <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
                         <Button Content="{Binding Status, Converter={StaticResource StatusToTextConverter}, Mode=OneWay}" Height="25" Width="110" Command="{Binding UninstallCommand}"/>
                     </StackPanel>
+                    <ListView 
+                            ItemsSource="{Binding InstalledVersions}" 
+                            ItemTemplate="{StaticResource installedVersionItem}" 
+                            PreviewKeyDown="List_PreviewKeyDown" 
+                            Grid.Row="1" />
+                    <TextBlock TextWrapping="Wrap"
+                               Text="Получение списка установленных версий..." 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               FontSize="18" 
+                               Foreground="#FF9C9C9C"
+                               Grid.Row="1" Visibility="{Binding InstalledVersionsArePopulating, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+
                 </Grid>
             </TabItem>
             <TabItem Header="Кэш">
@@ -129,6 +138,14 @@
                         ItemTemplate="{StaticResource cacheItem}"
                         PreviewKeyDown="List_PreviewKeyDown"
                         Grid.Row="1" />
+
+                    <TextBlock TextWrapping="Wrap"
+                               Text="Получение списка кэшей метаданных..." 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               FontSize="18" 
+                               Foreground="#FF9C9C9C"
+                               Grid.Row="1" Visibility="{Binding CacheArePopulating, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
                 </Grid>
             </TabItem>
             <TabItem Header="Информационные базы">
@@ -153,6 +170,15 @@
                         ItemTemplate="{StaticResource infoBaseItem}"
                         PreviewKeyDown="List_PreviewKeyDown" 
                         Grid.Row="1" />
+
+                    <TextBlock TextWrapping="Wrap"
+                               Text="Получение списка информационных баз..." 
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               FontSize="18" 
+                               Foreground="#FF9C9C9C"
+                               Grid.Row="1" Visibility="{Binding InfoBasesArePopulating, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+
                 </Grid>
             </TabItem>
         </TabControl>
