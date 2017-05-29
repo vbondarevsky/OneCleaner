@@ -42,7 +42,7 @@ namespace OneCleaner
 
             foreach (var item in Cache)
             {
-                item.Name = InfoBases.Where(i => i.UUID == item.UUID).FirstOrDefault().Name;
+                item.Name = InfoBases.Where(i => i.UUID == item.UUID).FirstOrDefault()?.Name;
             }
         }
 
