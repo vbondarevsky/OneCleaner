@@ -85,28 +85,28 @@ namespace OneCleaner
             Status = Status.Idle;
         }
 
-        private void PopulateInfoBases()
+        private async void PopulateInfoBases()
         {
             InfoBases.Clear();
-            foreach (var item in Platform.GetInfoBases())
+            foreach (var item in await Platform.GetInfoBases())
             {
                 InfoBases.Add(new InfoBaseItemViewModel() { Name = item.Name, UUID = item.UUID, Size = item.Size, Connection = item.Connection });
             }
         }
 
-        private void PopulateCache()
+        private async void PopulateCache()
         {
             Cache.Clear();
-            foreach (var item in Platform.GetCache())
+            foreach (var item in await Platform.GetCache())
             {
                 Cache.Add(new CacheItemViewModel() { Path = item.Path, UUID = item.UUID, Size = item.Size });
             }
         }
 
-        private void PopulateInstalledVersions()
+        private async void PopulateInstalledVersions()
         {
             InstalledVersions.Clear();
-            foreach (var item in Platform.GetInstalledVersions())
+            foreach (var item in await Platform.GetInstalledVersions())
             {
                 InstalledVersions.Add(
                     new InstalledVersionItemViewModel()
