@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:OneCleaner"
              xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="OneCleaner.App"
              StartupUri="View/MainWindow.xaml"
-             Startup="App_Startup" >
+             Startup="App_Startup"
+             DispatcherUnhandledException="App_DispatcherUnhandledException">
     <Application.Resources>
         <System:Double x:Key="ItemFontSize">16</System:Double>
         <System:Double x:Key="DetailItemFontSize">11</System:Double>

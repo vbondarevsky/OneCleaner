@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Security.Principal;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace OneCleaner
 {
@@ -11,12 +12,7 @@ namespace OneCleaner
     /// </summary>
     public partial class App : Application
     {
-        public App() : base()
-        {
-            this.Dispatcher.UnhandledException += OnDispatcherUnhandledException;
-        }
-
-        void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             string errorMessage = string.Format("An unhandled exception occurred: {0}", e.Exception.Message);
             MessageBox.Show(errorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
