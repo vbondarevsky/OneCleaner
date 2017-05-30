@@ -23,6 +23,9 @@ namespace OneCleaner
         public ICommand SelectAllInstalledVersionCommand { get; set; }
         public ICommand UnselectAllInstalledVersionCommand { get; set; }
 
+
+        public ICommand RemoveInfoBaseCommand { get; private set; }
+
         public MainWindowViewModel()
         {
             Status = Status.Idle;
@@ -41,6 +44,17 @@ namespace OneCleaner
 
             UnselectAllInstalledVersionCommand = new RelayCommand(
                 () => { InstalledVersions.Select(item => { item.IsChecked = false; return item; }).ToList(); });
+
+            RemoveInfoBaseCommand = new RelayCommand(
+                () =>
+                {
+                    var list = InfoBases.Where(item => item.IsChecked).ToList();
+                    Platform.RemoveInfoBases(list.Select(item => { return item.Name; }).ToArray());
+                    foreach (var item in list)
+                    {
+                        InfoBases.Remove(item);
+                    }
+                });
         }
 
         private async void Uninstall()
@@ -93,7 +107,7 @@ namespace OneCleaner
             {
                 InfoBases.Add(new InfoBaseItemViewModel() { Name = item.Name, UUID = item.UUID, Size = item.Size, Connection = item.Connection });
             }
-            
+
             foreach (var item in await Platform.GetCache())
             {
                 Cache.Add(new CacheItemViewModel() { Path = item.Path, UUID = item.UUID, Size = item.Size });

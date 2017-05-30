@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -135,9 +136,7 @@ namespace OneCleaner
             return Task.Run(() =>
             {
                 List<InfoBase> infoBases = new List<InfoBase>();
-
-                var localAppData = Environment.GetEnvironmentVariable("APPDATA");
-                var ibases = Path.Combine(localAppData, "1C", "1CEStart", "ibases.v8i");
+                string ibases = GetInfoBasesPath();
 
                 var parser = new FileIniDataParser();
                 parser.Parser.Configuration.AllowDuplicateSections = true;
@@ -170,6 +169,40 @@ namespace OneCleaner
 
                 return infoBases;
             });
+        }
+
+        private static string GetInfoBasesPath()
+        {
+            var localAppData = Environment.GetEnvironmentVariable("APPDATA");
+            var ibases = Path.Combine(localAppData, "1C", "1CEStart", "ibases.v8i");
+            if (!File.Exists(ibases))
+                throw new FileNotFoundException("Файл не найден", ibases);
+
+            return ibases;
+        }
+
+        public static Task RemoveInfoBases(string[] infoBases)
+        {
+            return Task.Run(() =>
+            {
+                var file_backup = $"ibases.v8i_backup_{DateTime.Now:yyyy_MM_dd_HH_mm_ss}";
+                File.Copy(GetInfoBasesPath(), Path.Combine(Path.GetDirectoryName(GetInfoBasesPath()), file_backup));
+
+                var parser = new FileIniDataParser();
+                parser.Parser.Configuration.AllowDuplicateSections = true;
+                parser.Parser.Configuration.AllowDuplicateKeys = true;
+                parser.Parser.Configuration.AssigmentSpacer = "";
+
+                IniData data = parser.ReadFile(GetInfoBasesPath(), Encoding.UTF8);
+
+                foreach (var infoBase in infoBases)
+                {
+                    data.Sections.RemoveSection(infoBase);
+                }
+
+                parser.WriteFile(GetInfoBasesPath(), data, new UTF8Encoding(true));
+            });
+
         }
 
         private static bool IsPlatform1C(string vendor)

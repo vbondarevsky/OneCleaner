@@ -82,7 +82,15 @@
     </Window.TaskbarItemInfo>
     <Grid Name="MainGrid">
         <TabControl>
-            <TabItem Header="Платформа">
+            
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Платформа ("/>
+                        <TextBlock Text="{Binding InstalledVersions.Count, Mode=OneWay}"/>
+                        <TextBlock Text=")"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
@@ -116,7 +124,14 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Кэш">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Кэш ("/>
+                        <TextBlock Text="{Binding Cache.Count, Mode=OneWay}"/>
+                        <TextBlock Text=")"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
@@ -148,7 +163,14 @@
                                Grid.Row="1" Visibility="{Binding CacheArePopulating, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
                 </Grid>
             </TabItem>
-            <TabItem Header="Информационные базы">
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Информационные базы ("/>
+                        <TextBlock Text="{Binding InfoBases.Count, Mode=OneWay}"/>
+                        <TextBlock Text=")"/>
+                    </StackPanel>
+                </TabItem.Header>
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
@@ -163,7 +185,7 @@
                         </Button>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
-                        <Button Content="Удалить" Height="25" Width="110" />
+                        <Button Command="{Binding RemoveInfoBaseCommand}" Content="Удалить" Height="25" Width="110" />
                     </StackPanel>
                     <ListView 
                         ItemsSource="{Binding InfoBases}" 
