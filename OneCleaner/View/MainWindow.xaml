@@ -65,7 +65,7 @@
                 <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                 <StackPanel Grid.Column="1">
-                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}"/>
+                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}" TextWrapping="Wrap" />
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Connection}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
@@ -99,10 +99,10 @@
 
 
                     <StackPanel HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Orientation="Horizontal" >
-                        <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllInstalledVersionCommand}" Width="25" Height="25" HorizontalContentAlignment="Center">
+                        <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllCommand}" Width="25" Height="25" HorizontalContentAlignment="Center" CommandParameter="{Binding InstalledVersions}">
                             <Image Source="../Resource/checked.png" Stretch="None" />
                         </Button>
-                        <Button Margin="3,3,0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding UnselectAllInstalledVersionCommand}" Width="25" Height="25">
+                        <Button Margin="3,3,0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding UnselectAllCommand}" Width="25" Height="25" CommandParameter="{Binding InstalledVersions}">
                             <Image Source="../Resource/unchecked.png" Stretch="None" />
                         </Button>
                     </StackPanel>
@@ -138,15 +138,15 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <StackPanel HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-                        <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllInstalledVersionCommand}" Width="25" Height="25" HorizontalContentAlignment="Center">
+                        <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllCommand}" Width="25" Height="25" HorizontalContentAlignment="Center" CommandParameter="{Binding Cache}">
                             <Image Source="../Resource/checked.png" Stretch="None" />
                         </Button>
-                        <Button Margin="3,3,0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding UnselectAllInstalledVersionCommand}" Width="25" Height="25">
+                        <Button Margin="3,3,0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding UnselectAllCommand}" Width="25" Height="25" CommandParameter="{Binding Cache}">
                             <Image Source="../Resource/unchecked.png" Stretch="None" />
                         </Button>
                     </StackPanel>
                     <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
-                        <Button Content="Удалить" Height="25" Width="110" />
+                        <Button Command="{Binding RemoveCacheCommand}" Content="Удалить" Height="25" Width="110" />
                     </StackPanel>
                     <ListView 
 						ItemsSource="{Binding Cache}" 
@@ -177,10 +177,10 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <StackPanel HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
-                        <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllInstalledVersionCommand}" Width="25" Height="25" HorizontalContentAlignment="Center">
+                        <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllCommand}" Width="25" Height="25" HorizontalContentAlignment="Center" CommandParameter="{Binding InfoBases}">
                             <Image Source="../Resource/checked.png" Stretch="None" />
                         </Button>
-                        <Button Margin="3,3,0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding UnselectAllInstalledVersionCommand}" Width="25" Height="25">
+                        <Button Margin="3,3,0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding UnselectAllCommand}" Width="25" Height="25" CommandParameter="{Binding InfoBases}">
                             <Image Source="../Resource/unchecked.png" Stretch="None" />
                         </Button>
                     </StackPanel>

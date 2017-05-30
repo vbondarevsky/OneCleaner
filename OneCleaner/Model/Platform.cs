@@ -90,6 +90,21 @@ namespace OneCleaner
             });
         }
 
+        internal static Task RemoveCache(string[] pathes)
+        {
+            return Task.Run(() =>
+            {
+                foreach (var path in pathes)
+                {
+                    try
+                    {
+                        Directory.Delete(path, true);
+                    }
+                    catch { } // TODO: Добавить логгирование
+                }
+            });
+        }
+
         public static Task<bool> Uninstall(string uuid)
         {
             return Task.Run(() =>
@@ -136,21 +151,14 @@ namespace OneCleaner
             return Task.Run(() =>
             {
                 List<InfoBase> infoBases = new List<InfoBase>();
-                string ibases = GetInfoBasesPath();
-
-                var parser = new FileIniDataParser();
-                parser.Parser.Configuration.AllowDuplicateSections = true;
-                parser.Parser.Configuration.AllowDuplicateKeys = true;
-
-                IniData data = parser.ReadFile(ibases);
-
-                InfoBase infoBase;
+                var parser = GetIniDataParser();
+                IniData data = parser.ReadFile(GetInfoBasesPath());
 
                 foreach (var section in data.Sections)
                 {
                     if (section.Keys["Connect"] != null)
                     {
-                        infoBase = new InfoBase()
+                        var infoBase = new InfoBase()
                         {
                             Name = section.SectionName,
                             Connection = section.Keys["Connect"],
@@ -187,22 +195,48 @@ namespace OneCleaner
             {
                 var file_backup = $"ibases.v8i_backup_{DateTime.Now:yyyy_MM_dd_HH_mm_ss}";
                 File.Copy(GetInfoBasesPath(), Path.Combine(Path.GetDirectoryName(GetInfoBasesPath()), file_backup));
-
-                var parser = new FileIniDataParser();
-                parser.Parser.Configuration.AllowDuplicateSections = true;
-                parser.Parser.Configuration.AllowDuplicateKeys = true;
-                parser.Parser.Configuration.AssigmentSpacer = "";
+                var parser = GetIniDataParser();
 
                 IniData data = parser.ReadFile(GetInfoBasesPath(), Encoding.UTF8);
 
                 foreach (var infoBase in infoBases)
                 {
+                    var path = GetPathFromConnection(data.Sections[infoBase]["Connect"]);
+                    if (path != null && Directory.Exists(path) && !(new Uri(path)).IsUnc)
+                    {
+                        try
+                        {
+                            Directory.Delete(path, true);
+                        }
+                        catch { } // TODO: Добавить логгирование?
+                    }
+
                     data.Sections.RemoveSection(infoBase);
                 }
 
                 parser.WriteFile(GetInfoBasesPath(), data, new UTF8Encoding(true));
             });
 
+        }
+
+        private static string GetPathFromConnection(string connection)
+        {
+            string path = null;
+            if (connection.StartsWith("File"))
+                path = connection.Substring(6, connection.Length - 8);
+
+            return path;
+        }
+
+        private static FileIniDataParser GetIniDataParser()
+        {
+            var parser = new FileIniDataParser();
+            parser.Parser.Configuration.AllowDuplicateSections = true;
+            parser.Parser.Configuration.AllowDuplicateKeys = true;
+            parser.Parser.Configuration.AssigmentSpacer = "";
+            parser.Parser.Configuration.SectionRegex = new Regex(@"^\[.*?\]$");
+
+            return parser;
         }
 
         private static bool IsPlatform1C(string vendor)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Data;
@@ -20,9 +21,10 @@ namespace OneCleaner
         public ObservableCollection<InfoBaseItemViewModel> InfoBases { get; private set; }
 
         public ICommand UninstallCommand { get; set; }
-        public ICommand SelectAllInstalledVersionCommand { get; set; }
-        public ICommand UnselectAllInstalledVersionCommand { get; set; }
+        public ICommand SelectAllCommand { get; set; }
+        public ICommand UnselectAllCommand { get; set; }
 
+        public ICommand RemoveCacheCommand { get; private set; }
 
         public ICommand RemoveInfoBaseCommand { get; private set; }
 
@@ -37,19 +39,36 @@ namespace OneCleaner
             Cache = new ObservableCollection<CacheItemViewModel>();
             PopulateInfoBasesAndCache();
 
-            UninstallCommand = new RelayCommand(Uninstall);
+            UninstallCommand = new RelayCommand(p => { Uninstall(); });
 
-            SelectAllInstalledVersionCommand = new RelayCommand(
-                () => { InstalledVersions.Select(item => { item.IsChecked = true; return item; }).ToList(); });
+            SelectAllCommand = new RelayCommand(
+                p =>
+                {
+                    (p as IEnumerable<BaseItemViewModel>).Cast<BaseItemViewModel>().Select(item => { item.IsChecked = true; return item; }).ToList();
+                });
 
-            UnselectAllInstalledVersionCommand = new RelayCommand(
-                () => { InstalledVersions.Select(item => { item.IsChecked = false; return item; }).ToList(); });
+            UnselectAllCommand = new RelayCommand(
+                p =>
+                {
+                    (p as IEnumerable<BaseItemViewModel>).Cast<BaseItemViewModel>().Select(item => { item.IsChecked = false; return item; }).ToList();
+                });
+
+            RemoveCacheCommand = new RelayCommand(
+                async p =>
+                {
+                    var list = Cache.Where(item => item.IsChecked).ToList();
+                    await Platform.RemoveCache(list.Select(item => { return item.Path; }).ToArray());
+                    foreach (var item in list)
+                    {
+                        Cache.Remove(item);
+                    }
+                });
 
             RemoveInfoBaseCommand = new RelayCommand(
-                () =>
+                async p =>
                 {
                     var list = InfoBases.Where(item => item.IsChecked).ToList();
-                    Platform.RemoveInfoBases(list.Select(item => { return item.Name; }).ToArray());
+                    await Platform.RemoveInfoBases(list.Select(item => { return item.Name; }).ToArray());
                     foreach (var item in list)
                     {
                         InfoBases.Remove(item);
@@ -119,6 +138,8 @@ namespace OneCleaner
             foreach (var item in Cache)
             {
                 item.Name = InfoBases.Where(i => i.UUID == item.UUID).FirstOrDefault()?.Name;
+                item.IsChecked = string.IsNullOrEmpty(item.Name);
+                item.Name = item.Name ?? "<База не найдена>";
             }
         }
 

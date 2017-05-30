@@ -5,11 +5,11 @@ namespace OneCleaner
 {
     public class RelayCommand : ICommand
     {
-        private Action _action;
+        private Action<object> _action;
 
         public event EventHandler CanExecuteChanged = (sender, e) => { };
 
-        public RelayCommand(Action action)
+        public RelayCommand(Action<object> action)
         {
             this._action = action;
         }
@@ -21,7 +21,7 @@ namespace OneCleaner
 
         public void Execute(object parameter)
         {
-            this._action();
+            this._action(parameter);
         }
     }
 }
