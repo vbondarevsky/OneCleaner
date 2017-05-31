@@ -171,6 +171,7 @@ namespace OneCleaner
                             if (Directory.Exists(path))
                                 infoBase.Size = Utility.GetDirectorySize(path);
                         }
+                        infoBase.Version = section.Keys["DefaultVersion"] ?? section.Keys["Version"];
                         infoBases.Add(infoBase);
                     }
                 }

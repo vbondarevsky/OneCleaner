@@ -124,12 +124,24 @@ namespace OneCleaner
 
             foreach (var item in await Platform.GetInfoBases())
             {
-                InfoBases.Add(new InfoBaseItemViewModel() { Name = item.Name, UUID = item.UUID, Size = item.Size, Connection = item.Connection });
+                InfoBases.Add(new InfoBaseItemViewModel()
+                {
+                    Name = item.Name,
+                    UUID = item.UUID,
+                    Size = item.Size,
+                    Connection = item.Connection,
+                    Version = item.Version
+                });
             }
 
             foreach (var item in await Platform.GetCache())
             {
-                Cache.Add(new CacheItemViewModel() { Path = item.Path, UUID = item.UUID, Size = item.Size });
+                Cache.Add(new CacheItemViewModel()
+                {
+                    Path = item.Path,
+                    UUID = item.UUID,
+                    Size = item.Size
+                });
             }
 
             InfoBasesArePopulating = false;

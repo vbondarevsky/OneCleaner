@@ -67,8 +67,9 @@
                 <StackPanel Grid.Column="1">
                     <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}" TextWrapping="Wrap" />
                     <StackPanel Orientation="Horizontal">
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Vertical">
                             <TextBlock Text="{Binding Connection}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                            <TextBlock Text="{Binding Version}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
                         </StackPanel>
                     </StackPanel>
                 </StackPanel>
