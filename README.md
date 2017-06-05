@@ -15,3 +15,6 @@
 ## Требования
 - Microsoft .NET Framework 4.5 и выше
 - Windows Vista и выше
+
+## Интерфейс
+![main](https://cloud.githubusercontent.com/assets/11818792/26778264/39c015c0-49e9-11e7-86f7-cf9bfeb6bdd3.png)
