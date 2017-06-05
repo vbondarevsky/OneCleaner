@@ -64,25 +64,29 @@ namespace OneCleaner
                         if (itemKey == null)
                             continue;
 
-                        var name = (string)itemKey.GetValue("DisplayName", null);
-                        var vendor = (string)itemKey.GetValue("Publisher", null);
-                        var version = (string)itemKey.GetValue("DisplayVersion", "0.0.0.0");
-                        var location = (string)itemKey.GetValue("InstallLocation", "");
-                        var dateStr = (string)itemKey.GetValue("InstallDate", "00010101");
-
-                        if (name == null || !IsPlatform1C(vendor) || String.IsNullOrEmpty(location))
-                            continue;
-
-                        InstalledVersion instVerItem = new InstalledVersion
+                        try
                         {
-                            Name = name,
-                            Version = version,
-                            UUID = itemUUID,
-                            Location = location,
-                            InstallDate = DateTime.ParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture),
-                            Size = Utility.GetDirectorySize(location)
-                        };
-                        installedVersions.Add(instVerItem);
+                            var name = (string)itemKey.GetValue("DisplayName", null);
+                            var vendor = (string)itemKey.GetValue("Publisher", null);
+                            var version = (string)itemKey.GetValue("DisplayVersion", "0.0.0.0");
+                            var location = (string)itemKey.GetValue("InstallLocation", "");
+                            var dateStr = (string)itemKey.GetValue("InstallDate", "00010101");
+
+                            if (name == null || !IsPlatform1C(vendor) || String.IsNullOrEmpty(location))
+                                continue;
+
+                            InstalledVersion instVerItem = new InstalledVersion
+                            {
+                                Name = name,
+                                Version = version,
+                                UUID = itemUUID,
+                                Location = location,
+                                InstallDate = DateTime.ParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture),
+                                Size = Utility.GetDirectorySize(location)
+                            };
+                            installedVersions.Add(instVerItem);
+                        }
+                        catch (Exception) { continue; }
                     }
                 }
 

@@ -156,7 +156,7 @@
                         Grid.Row="1" />
 
                     <TextBlock TextWrapping="Wrap"
-                               Text="Получение списка кэшей метаданных..." 
+                               Text="Получение кэша метаданных..." 
                                HorizontalAlignment="Center" 
                                VerticalAlignment="Center" 
                                FontSize="18" 
