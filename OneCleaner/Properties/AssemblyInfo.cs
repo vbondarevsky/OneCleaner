@@ -6,11 +6,11 @@ using System.Windows;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("OneCleaner")]
-[assembly: AssemblyDescription("Средство для удаления неиспользуемых версий 1С:Предприятие 8 и файлов")]
+[assembly: AssemblyDescription("Средство для удаления неиспользуемых версий 1С:Предприятие 8, кэша метаданных и информационных баз")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("OneCleaner")]
-[assembly: AssemblyCopyright("Copyright ©  2017 Vladimir Bondarevskiy")]
+[assembly: AssemblyCopyright("Copyright © Vladimir Bondarevskiy")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
