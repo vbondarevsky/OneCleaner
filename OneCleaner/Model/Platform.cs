@@ -189,7 +189,7 @@ namespace OneCleaner
             var localAppData = Environment.GetEnvironmentVariable("APPDATA");
             var ibases = Path.Combine(localAppData, "1C", "1CEStart", "ibases.v8i");
             if (!File.Exists(ibases))
-                throw new FileNotFoundException("Файл не найден", ibases);
+                throw new FileNotFoundException($"Файл не найден - {ibases}");
 
             return ibases;
         }
