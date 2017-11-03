@@ -16,74 +16,18 @@
         <local:StatusToTextConverter x:Key="StatusToTextConverter"/>
         <local:LongToSizeStringConverter x:Key="LongToSizeStringConverter"/>
         <local:StatusToTaskbarStatusConverter x:Key="StatusToTaskbarStatusConverter"/>
-
-        <DataTemplate x:Key="installedVersionItem" DataType="local:InstalledVersionItemViewModel">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="25"/>
-                    <ColumnDefinition Width="400"/>
-                    <ColumnDefinition Width="100"/>
-                </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}"/>
-                    <TextBlock Text="{Binding InstallDate, StringFormat=\{0:dd.MM.yyyy\}}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource DetailItemBrush}"/>
-                </StackPanel>
-                <TextBlock Grid.Column="2" Text="{Binding Size, Converter={StaticResource LongToSizeStringConverter}}" HorizontalAlignment="Right" FontSize="{DynamicResource ItemFontSize}"/>
-            </Grid>
-        </DataTemplate>
-
-        <DataTemplate x:Key="cacheItem" DataType="local:CacheItemViewModel">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="25"/>
-                    <ColumnDefinition Width="400"/>
-                    <ColumnDefinition Width="100"/>
-                </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}"/>
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding UUID}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-                <TextBlock Grid.Column="2" Text="{Binding Size, Converter={StaticResource LongToSizeStringConverter}}" HorizontalAlignment="Right" FontSize="{DynamicResource ItemFontSize}"/>
-            </Grid>
-        </DataTemplate>
-
-        <DataTemplate x:Key="infoBaseItem" DataType="local:InfoBaseItemViewModel">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="25"/>
-                    <ColumnDefinition Width="400"/>
-                    <ColumnDefinition Width="100"/>
-                </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-                <StackPanel Grid.Column="1">
-                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}" TextWrapping="Wrap" />
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding Connection}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
-                            <TextBlock Text="{Binding Version}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
-                        </StackPanel>
-                    </StackPanel>
-                </StackPanel>
-                <TextBlock Grid.Column="2" Text="{Binding Size, Converter={StaticResource LongToSizeStringConverter}}" HorizontalAlignment="Right" FontSize="{DynamicResource ItemFontSize}"/>
-
-            </Grid>
-        </DataTemplate>
+        <Style x:Key="HeaderStyle" TargetType="GridViewColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+        <Style TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
     </Window.Resources>
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo ProgressValue="{Binding Progress}" ProgressState="{Binding Status, Converter={StaticResource StatusToTaskbarStatusConverter}}"/>
     </Window.TaskbarItemInfo>
     <Grid Name="MainGrid">
         <TabControl>
-            
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -112,9 +56,50 @@
                     </StackPanel>
                     <ListView 
                             ItemsSource="{Binding InstalledVersions}" 
-                            ItemTemplate="{StaticResource installedVersionItem}" 
                             PreviewKeyDown="List_PreviewKeyDown" 
-                            Grid.Row="1" />
+                            Grid.Row="1">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="30">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding InstalledVersionsSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="IsChecked"></GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="400">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding InstalledVersionsSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="Version">Программа</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}" Foreground="{DynamicResource ItemBrush}"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="100">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding InstalledVersionsSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="Size">Размер</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Size, Converter={StaticResource LongToSizeStringConverter}}" HorizontalAlignment="Right" FontSize="{DynamicResource ItemFontSize}" Foreground="{DynamicResource ItemBrush}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
                     <TextBlock TextWrapping="Wrap"
                                Text="Получение списка установленных версий..." 
                                HorizontalAlignment="Center" 
@@ -151,9 +136,48 @@
                     </StackPanel>
                     <ListView 
 						ItemsSource="{Binding Cache}" 
-                        ItemTemplate="{StaticResource cacheItem}"
                         PreviewKeyDown="List_PreviewKeyDown"
-                        Grid.Row="1" />
+                        Grid.Row="1">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="30">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding CacheSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="IsChecked"/>
+                                        </GridViewColumn.Header>
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="400">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding CacheSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="Name">Информационная база</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}" Foreground="{DynamicResource ItemBrush}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="100">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding CacheSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="Size">Размер</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Size, Converter={StaticResource LongToSizeStringConverter}}" TextAlignment="Right" FontSize="{DynamicResource ItemFontSize}" Foreground="{DynamicResource ItemBrush}"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
 
                     <TextBlock TextWrapping="Wrap"
                                Text="Получение кэша метаданных..." 
@@ -190,9 +214,57 @@
                     </StackPanel>
                     <ListView 
                         ItemsSource="{Binding InfoBases}" 
-                        ItemTemplate="{StaticResource infoBaseItem}"
                         PreviewKeyDown="List_PreviewKeyDown" 
-                        Grid.Row="1" />
+                        Grid.Row="1">
+                        <ListView.View>
+                            <GridView>
+                                <GridView.Columns>
+                                    <GridViewColumn Width="30">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding InfoBasesSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="IsChecked"/>
+                                        </GridViewColumn.Header>
+
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding IsChecked}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="400">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding InfoBasesSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="Name">Информационная база</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Grid.Column="1">
+                                                    <TextBlock Text="{Binding Name}" FontSize="{DynamicResource ItemFontSize}" TextWrapping="Wrap" Foreground="{DynamicResource ItemBrush}"/>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <StackPanel Orientation="Vertical">
+                                                            <TextBlock Text="{Binding Connection}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                                            <TextBlock Text="{Binding Version}" FontStyle="{DynamicResource DetailItemFontStyle}" FontSize="{DynamicResource DetailItemFontSize}" Foreground="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                    <GridViewColumn Width="100">
+                                        <GridViewColumn.Header>
+                                            <GridViewColumnHeader Command="{Binding InfoBasesSortCommand}" CommandParameter="{Binding Tag, RelativeSource={RelativeSource Self}}" Tag="Size">Размер</GridViewColumnHeader>
+                                        </GridViewColumn.Header>
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Size, Converter={StaticResource LongToSizeStringConverter}}" TextAlignment="Right" FontSize="{DynamicResource ItemFontSize}" Foreground="{DynamicResource ItemBrush}" VerticalAlignment="Top"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+
+                                </GridView.Columns>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
 
                     <TextBlock TextWrapping="Wrap"
                                Text="Получение списка информационных баз..." 
