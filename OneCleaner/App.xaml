@@ -8,6 +8,7 @@
              DispatcherUnhandledException="App_DispatcherUnhandledException">
     <Application.Resources>
         <System:Double x:Key="ItemFontSize">16</System:Double>
+        <SolidColorBrush x:Key="ItemBrush" Color="Black"/>
         <System:Double x:Key="DetailItemFontSize">11</System:Double>
         <FontStyle x:Key="DetailItemFontStyle">Italic</FontStyle>
         <SolidColorBrush x:Key="DetailItemBrush" Color="Gray"/>

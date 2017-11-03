@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -24,6 +24,10 @@ namespace OneCleaner
         public ICommand SelectAllCommand { get; set; }
         public ICommand UnselectAllCommand { get; set; }
 
+        public ICommand InstalledVersionsSortCommand { get; set; }
+        public ICommand InfoBasesSortCommand { get; set; }
+        public ICommand CacheSortCommand { get; set; }
+
         public ICommand RemoveCacheCommand { get; private set; }
 
         public ICommand RemoveInfoBaseCommand { get; private set; }
@@ -38,6 +42,10 @@ namespace OneCleaner
             InfoBases = new ObservableCollection<InfoBaseItemViewModel>();
             Cache = new ObservableCollection<CacheItemViewModel>();
             PopulateInfoBasesAndCache();
+
+            InstalledVersionsSortCommand = new RelayCommand(p => { Sort(CollectionViewSource.GetDefaultView(InstalledVersions), (string)p); });
+            InfoBasesSortCommand = new RelayCommand(p => { Sort(CollectionViewSource.GetDefaultView(InfoBases), (string)p); });
+            CacheSortCommand = new RelayCommand(p => { Sort(CollectionViewSource.GetDefaultView(Cache), (string)p); });
 
             UninstallCommand = new RelayCommand(p => { Uninstall(); });
 
@@ -74,6 +82,20 @@ namespace OneCleaner
                         InfoBases.Remove(item);
                     }
                 });
+
+        }
+
+        private void Sort(ICollectionView view, string Name)
+        {
+            var sort = view.SortDescriptions.Select(item => item).Where(item => item.PropertyName == Name).FirstOrDefault();
+            view.SortDescriptions.Clear();
+            if (sort.PropertyName == null)
+                view.SortDescriptions.Add(new SortDescription(Name, ListSortDirection.Ascending));
+            else
+                view.SortDescriptions.Add(
+                    new SortDescription(
+                        Name,
+                        (sort.Direction == ListSortDirection.Ascending) ? ListSortDirection.Descending : ListSortDirection.Ascending));
         }
 
         private async void Uninstall()
@@ -167,7 +189,7 @@ namespace OneCleaner
                         Name = item.Name,
                         UUID = item.UUID,
                         Size = item.Size,
-                        Version = item.Version,
+                        Version = item.VersionInt,
                         InstallDate = item.InstallDate
                     }
                 );

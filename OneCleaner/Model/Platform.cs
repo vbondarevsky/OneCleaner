@@ -75,10 +75,13 @@ namespace OneCleaner
                             if (name == null || !IsPlatform1C(vendor) || String.IsNullOrEmpty(location))
                                 continue;
 
+                            var v = version.Split('.');
+                            long versionInt = long.Parse(v[0].PadLeft(2, '0') + v[1].PadLeft(2, '0') + v[2].PadLeft(3, '0') + v[3].PadLeft(5, '0'));
                             InstalledVersion instVerItem = new InstalledVersion
                             {
                                 Name = name,
                                 Version = version,
+                                VersionInt = versionInt,
                                 UUID = itemUUID,
                                 Location = location,
                                 InstallDate = DateTime.ParseExact(dateStr, "yyyyMMdd", CultureInfo.InvariantCulture),
@@ -90,7 +93,7 @@ namespace OneCleaner
                     }
                 }
 
-                return installedVersions;
+                return installedVersions.OrderBy(i => i.VersionInt).ToList();
             });
         }
 

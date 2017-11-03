@@ -6,6 +6,7 @@ namespace OneCleaner
     {
         public string Name { get; set; }
         public string Version { get; set; }
+        public long VersionInt { get; set; }
         public string UUID { get; set; }
         public string Location { get; set; }
         public DateTime InstallDate { get; set; }
