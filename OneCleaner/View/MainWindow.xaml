@@ -22,6 +22,23 @@
         <Style TargetType="ListViewItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
+        <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+            <Style.Resources>
+                <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                    <VisualBrush.Visual>
+                        <Label Content="Фильтр" Foreground="LightGray" />
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Style.Resources>
+            <Style.Triggers>
+                <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                </Trigger>
+                <Trigger Property="Text" Value="{x:Null}">
+                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo ProgressValue="{Binding Progress}" ProgressState="{Binding Status, Converter={StaticResource StatusToTaskbarStatusConverter}}"/>
@@ -51,7 +68,8 @@
                             <Image Source="../Resource/unchecked.png" Stretch="None" />
                         </Button>
                     </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <TextBox Text="{Binding InstalledVersionsFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="130" Margin="0,0,10,0" Padding="0" FontSize="16" />
                         <Button Content="{Binding Status, Converter={StaticResource StatusToTextConverter}, Mode=OneWay}" Height="25" Width="110" Command="{Binding UninstallCommand}"/>
                     </StackPanel>
                     <ListView 
@@ -131,7 +149,8 @@
                             <Image Source="../Resource/unchecked.png" Stretch="None" />
                         </Button>
                     </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <TextBox Text="{Binding CacheFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="130" Margin="0,0,10,0" Padding="0" FontSize="16" />
                         <Button Command="{Binding RemoveCacheCommand}" Content="Удалить" Height="25" Width="110" />
                     </StackPanel>
                     <ListView 
@@ -209,7 +228,8 @@
                             <Image Source="../Resource/unchecked.png" Stretch="None" />
                         </Button>
                     </StackPanel>
-                    <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <TextBox Text="{Binding InfoBasesFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="130" Margin="0,0,10,0" Padding="0" FontSize="16" />
                         <Button Command="{Binding RemoveInfoBaseCommand}" Content="Удалить" Height="25" Width="110" />
                     </StackPanel>
                     <ListView 

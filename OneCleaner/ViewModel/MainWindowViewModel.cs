@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -11,6 +12,52 @@ namespace OneCleaner
     {
         public Status Status { get; private set; }
         public double Progress { get; private set; }
+
+#region Filter
+
+        public string InstalledVersionsFilter { get; set; }
+        public void OnInstalledVersionsFilterChanged()
+        {
+            var view = CollectionViewSource.GetDefaultView(InstalledVersions);
+            if (view != null)
+            {
+                view.Filter = x =>
+                {
+                    var item = x as InstalledVersionItemViewModel;
+                    return item.Name.Contains(InstalledVersionsFilter);
+                };
+            }
+        }
+
+        public string CacheFilter { get; set; }
+        public void OnCacheFilterChanged()
+        {
+            var view = CollectionViewSource.GetDefaultView(Cache);
+            if (view != null)
+            {
+                view.Filter = x =>
+                {
+                    var item = x as CacheItemViewModel;
+                    return item.Name.Contains(CacheFilter);
+                };
+            }
+        }
+
+        public string InfoBasesFilter { get; set; }
+        public void OnInfoBasesFilterChanged()
+        {
+            var view = CollectionViewSource.GetDefaultView(InfoBases);
+            if (view != null)
+            {
+                view.Filter = x =>
+                {
+                    var item = x as InfoBaseItemViewModel;
+                    return item.Name.Contains(InfoBasesFilter) || item.Connection.Contains(InfoBasesFilter);
+                };
+            }
+        }
+
+#endregion
 
         public bool InstalledVersionsArePopulating { get; private set; }
         public bool CacheArePopulating { get; private set; }
