@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -11,6 +12,59 @@ namespace OneCleaner
     {
         public Status Status { get; private set; }
         public double Progress { get; private set; }
+
+        public long InstalledVersionsTotalSize { get; private set; }
+        public long InstalledVersionsFreeSize { get; private set; }
+        public long CacheTotalSize { get; private set; }
+        public long CacheFreeSize { get; private set; }
+        public long InfoBasesTotalSize { get; private set; }
+        public long InfoBasesFreeSize { get; private set; }
+
+        #region Filter
+
+        public string InstalledVersionsFilter { get; set; }
+        public void OnInstalledVersionsFilterChanged()
+        {
+            var view = CollectionViewSource.GetDefaultView(InstalledVersions);
+            if (view != null)
+            {
+                view.Filter = x =>
+                {
+                    var item = x as InstalledVersionItemViewModel;
+                    return item.Name.Contains(InstalledVersionsFilter);
+                };
+            }
+        }
+
+        public string CacheFilter { get; set; }
+        public void OnCacheFilterChanged()
+        {
+            var view = CollectionViewSource.GetDefaultView(Cache);
+            if (view != null)
+            {
+                view.Filter = x =>
+                {
+                    var item = x as CacheItemViewModel;
+                    return item.Name.Contains(CacheFilter);
+                };
+            }
+        }
+
+        public string InfoBasesFilter { get; set; }
+        public void OnInfoBasesFilterChanged()
+        {
+            var view = CollectionViewSource.GetDefaultView(InfoBases);
+            if (view != null)
+            {
+                view.Filter = x =>
+                {
+                    var item = x as InfoBaseItemViewModel;
+                    return item.Name.Contains(InfoBasesFilter) || item.Connection.Contains(InfoBasesFilter);
+                };
+            }
+        }
+
+        #endregion
 
         public bool InstalledVersionsArePopulating { get; private set; }
         public bool CacheArePopulating { get; private set; }
@@ -24,8 +78,11 @@ namespace OneCleaner
         public ICommand SelectAllCommand { get; set; }
         public ICommand UnselectAllCommand { get; set; }
 
-        public ICommand RemoveCacheCommand { get; private set; }
+        public ICommand InstalledVersionsSortCommand { get; set; }
+        public ICommand InfoBasesSortCommand { get; set; }
+        public ICommand CacheSortCommand { get; set; }
 
+        public ICommand RemoveCacheCommand { get; private set; }
         public ICommand RemoveInfoBaseCommand { get; private set; }
 
         public MainWindowViewModel()
@@ -33,11 +90,21 @@ namespace OneCleaner
             Status = Status.Idle;
 
             InstalledVersions = new ObservableCollection<InstalledVersionItemViewModel>();
+            InstalledVersions.CollectionChanged += ItemsCollectionChanged;
+
             PopulateInstalledVersions();
 
             InfoBases = new ObservableCollection<InfoBaseItemViewModel>();
+            InfoBases.CollectionChanged += ItemsCollectionChanged;
+
             Cache = new ObservableCollection<CacheItemViewModel>();
+            Cache.CollectionChanged += ItemsCollectionChanged;
+
             PopulateInfoBasesAndCache();
+
+            InstalledVersionsSortCommand = new RelayCommand(p => { Sort(CollectionViewSource.GetDefaultView(InstalledVersions), (string)p); });
+            InfoBasesSortCommand = new RelayCommand(p => { Sort(CollectionViewSource.GetDefaultView(InfoBases), (string)p); });
+            CacheSortCommand = new RelayCommand(p => { Sort(CollectionViewSource.GetDefaultView(Cache), (string)p); });
 
             UninstallCommand = new RelayCommand(p => { Uninstall(); });
 
@@ -74,6 +141,53 @@ namespace OneCleaner
                         InfoBases.Remove(item);
                     }
                 });
+        }
+
+        private void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (INotifyPropertyChanged item in e.OldItems)
+                {
+                    UpdateSize();
+                    item.PropertyChanged -= ItemPropertyChanged;
+                }
+            }
+            if (e.NewItems != null)
+            {
+                foreach (INotifyPropertyChanged item in e.NewItems)
+                    item.PropertyChanged += ItemPropertyChanged;
+            }
+        }
+
+        private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateSize();
+        }
+
+        private void UpdateSize()
+        {
+            InstalledVersionsTotalSize = InstalledVersions.Select(i => i.Size).Sum();
+            InstalledVersionsFreeSize = InstalledVersions.Select(i => i).Where(i => i.IsChecked == true).Sum(i => i.Size);
+
+            CacheTotalSize = Cache.Select(i => i.Size).Sum();
+            CacheFreeSize = Cache.Select(i => i).Where(i => i.IsChecked == true).Sum(i => i.Size);
+
+            InfoBasesTotalSize = InfoBases.Select(i => i.Size).Sum();
+            InfoBasesFreeSize = InfoBases.Select(i => i).Where(i => i.IsChecked == true).Sum(i => i.Size);
+        }
+
+        private void Sort(ICollectionView view, string Name)
+        {
+            var sort = view.SortDescriptions.Select(item => item).Where(item => item.PropertyName == Name).FirstOrDefault();
+            view.SortDescriptions.Clear();
+            if (sort.PropertyName == null)
+                view.SortDescriptions.Add(new SortDescription(Name, ListSortDirection.Ascending));
+            else
+                view.SortDescriptions.Add(
+                    new SortDescription(
+                        Name,
+                        (sort.Direction == ListSortDirection.Ascending) ? ListSortDirection.Descending : ListSortDirection.Ascending));
         }
 
         private async void Uninstall()
@@ -167,7 +281,7 @@ namespace OneCleaner
                         Name = item.Name,
                         UUID = item.UUID,
                         Size = item.Size,
-                        Version = item.Version,
+                        Version = item.VersionInt,
                         InstallDate = item.InstallDate
                     }
                 );

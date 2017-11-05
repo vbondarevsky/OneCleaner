@@ -3,7 +3,7 @@
 
 ---
 
-Скачать скомпиллированную версию можно в разделе с релизами - https://github.com/vbondarevsky/OneCleaner/releases/
+Скачать скомпиллированную версию можно в разделе с релизами - https://github.com/vbondarevsky/OneCleaner/releases/latest
 
 ---
 
