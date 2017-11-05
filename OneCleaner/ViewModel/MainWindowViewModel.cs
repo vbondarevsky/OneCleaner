@@ -70,7 +70,7 @@ namespace OneCleaner
         public bool CacheArePopulating { get; private set; }
         public bool InfoBasesArePopulating { get; private set; }
 
-        public ObservableCollection<InstalledVersionItemViewModel> InstalledVersions { get; set; }
+        public ObservableCollection<InstalledVersionItemViewModel> InstalledVersions { get; private set; }
         public ObservableCollection<CacheItemViewModel> Cache { get; private set; }
         public ObservableCollection<InfoBaseItemViewModel> InfoBases { get; private set; }
 
