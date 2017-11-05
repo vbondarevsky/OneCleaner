@@ -57,6 +57,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="16"/>
                     </Grid.RowDefinitions>
 
 
@@ -125,7 +126,13 @@
                                FontSize="18" 
                                Foreground="#FF9C9C9C"
                                Grid.Row="1" Visibility="{Binding InstalledVersionsArePopulating, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
-
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBlock Text="Всего: "/>
+                        <TextBlock Text="{Binding InstalledVersionsTotalSize, Converter={StaticResource LongToSizeStringConverter}, Mode=OneWay}" FontWeight="Bold"/>
+                        <TextBlock Text="   "/>
+                        <TextBlock Text="К удалению: "/>
+                        <TextBlock Text="{Binding InstalledVersionsFreeSize, Converter={StaticResource LongToSizeStringConverter}, Mode=OneWay}" FontWeight="Bold"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem>
@@ -140,6 +147,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="16"/>
                     </Grid.RowDefinitions>
                     <StackPanel HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
                         <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllCommand}" Width="25" Height="25" HorizontalContentAlignment="Center" CommandParameter="{Binding Cache}">
@@ -205,6 +213,13 @@
                                FontSize="18" 
                                Foreground="#FF9C9C9C"
                                Grid.Row="1" Visibility="{Binding CacheArePopulating, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBlock Text="Всего: "/>
+                        <TextBlock Text="{Binding CacheTotalSize, Converter={StaticResource LongToSizeStringConverter}, Mode=OneWay}" FontWeight="Bold"/>
+                        <TextBlock Text="   "/>
+                        <TextBlock Text="К удалению: "/>
+                        <TextBlock Text="{Binding CacheFreeSize, Converter={StaticResource LongToSizeStringConverter}, Mode=OneWay}" FontWeight="Bold"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem>
@@ -219,6 +234,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="32"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="16"/>
                     </Grid.RowDefinitions>
                     <StackPanel HorizontalAlignment="Left" Grid.Column="0" Grid.Row="0" Orientation="Horizontal">
                         <Button Margin="0,3" Background="{x:Null}" BorderThickness="0.4" Command="{Binding SelectAllCommand}" Width="25" Height="25" HorizontalContentAlignment="Center" CommandParameter="{Binding InfoBases}">
@@ -293,7 +309,13 @@
                                FontSize="18" 
                                Foreground="#FF9C9C9C"
                                Grid.Row="1" Visibility="{Binding InfoBasesArePopulating, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay}" />
-
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <TextBlock Text="Всего: "/>
+                        <TextBlock Text="{Binding InfoBasesTotalSize, Converter={StaticResource LongToSizeStringConverter}, Mode=OneWay}" FontWeight="Bold"/>
+                        <TextBlock Text="   "/>
+                        <TextBlock Text="К удалению: "/>
+                        <TextBlock Text="{Binding InfoBasesFreeSize, Converter={StaticResource LongToSizeStringConverter}, Mode=OneWay}" FontWeight="Bold"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>

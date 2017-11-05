@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -13,7 +13,14 @@ namespace OneCleaner
         public Status Status { get; private set; }
         public double Progress { get; private set; }
 
-#region Filter
+        public long InstalledVersionsTotalSize { get; private set; }
+        public long InstalledVersionsFreeSize { get; private set; }
+        public long CacheTotalSize { get; private set; }
+        public long CacheFreeSize { get; private set; }
+        public long InfoBasesTotalSize { get; private set; }
+        public long InfoBasesFreeSize { get; private set; }
+
+        #region Filter
 
         public string InstalledVersionsFilter { get; set; }
         public void OnInstalledVersionsFilterChanged()
@@ -57,13 +64,13 @@ namespace OneCleaner
             }
         }
 
-#endregion
+        #endregion
 
         public bool InstalledVersionsArePopulating { get; private set; }
         public bool CacheArePopulating { get; private set; }
         public bool InfoBasesArePopulating { get; private set; }
 
-        public ObservableCollection<InstalledVersionItemViewModel> InstalledVersions { get; private set; }
+        public ObservableCollection<InstalledVersionItemViewModel> InstalledVersions { get; set; }
         public ObservableCollection<CacheItemViewModel> Cache { get; private set; }
         public ObservableCollection<InfoBaseItemViewModel> InfoBases { get; private set; }
 
@@ -76,7 +83,6 @@ namespace OneCleaner
         public ICommand CacheSortCommand { get; set; }
 
         public ICommand RemoveCacheCommand { get; private set; }
-
         public ICommand RemoveInfoBaseCommand { get; private set; }
 
         public MainWindowViewModel()
@@ -84,10 +90,16 @@ namespace OneCleaner
             Status = Status.Idle;
 
             InstalledVersions = new ObservableCollection<InstalledVersionItemViewModel>();
+            InstalledVersions.CollectionChanged += ItemsCollectionChanged;
+
             PopulateInstalledVersions();
 
             InfoBases = new ObservableCollection<InfoBaseItemViewModel>();
+            InfoBases.CollectionChanged += ItemsCollectionChanged;
+
             Cache = new ObservableCollection<CacheItemViewModel>();
+            Cache.CollectionChanged += ItemsCollectionChanged;
+
             PopulateInfoBasesAndCache();
 
             InstalledVersionsSortCommand = new RelayCommand(p => { Sort(CollectionViewSource.GetDefaultView(InstalledVersions), (string)p); });
@@ -129,7 +141,40 @@ namespace OneCleaner
                         InfoBases.Remove(item);
                     }
                 });
+        }
 
+        private void ItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.OldItems != null)
+            {
+                foreach (INotifyPropertyChanged item in e.OldItems)
+                {
+                    UpdateSize();
+                    item.PropertyChanged -= ItemPropertyChanged;
+                }
+            }
+            if (e.NewItems != null)
+            {
+                foreach (INotifyPropertyChanged item in e.NewItems)
+                    item.PropertyChanged += ItemPropertyChanged;
+            }
+        }
+
+        private void ItemPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateSize();
+        }
+
+        private void UpdateSize()
+        {
+            InstalledVersionsTotalSize = InstalledVersions.Select(i => i.Size).Sum();
+            InstalledVersionsFreeSize = InstalledVersions.Select(i => i).Where(i => i.IsChecked == true).Sum(i => i.Size);
+
+            CacheTotalSize = Cache.Select(i => i.Size).Sum();
+            CacheFreeSize = Cache.Select(i => i).Where(i => i.IsChecked == true).Sum(i => i.Size);
+
+            InfoBasesTotalSize = InfoBases.Select(i => i.Size).Sum();
+            InfoBasesFreeSize = InfoBases.Select(i => i).Where(i => i.IsChecked == true).Sum(i => i.Size);
         }
 
         private void Sort(ICollectionView view, string Name)
