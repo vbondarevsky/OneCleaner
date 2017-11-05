@@ -17,4 +17,4 @@
 - Windows Vista и выше
 
 ## Интерфейс
-![main](https://cloud.githubusercontent.com/assets/11818792/26778264/39c015c0-49e9-11e7-86f7-cf9bfeb6bdd3.png)
+![main](https://user-images.githubusercontent.com/11818792/32410970-9e22c940-c1df-11e7-860c-7f5d3f88a50f.jpg)
